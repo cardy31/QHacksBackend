@@ -3,53 +3,35 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from scheduler.models import Scheduler
-from scheduler.serializers import SchedulerSerializer
+from scheduler.serializers import SchedulerSerializer, UserSerializer
+from rest_framework import generics
+from django.contrib.auth.models import User
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
 
 
-def SchedulerList(request):
-    '''
-    list all scheduler todos, or create a new to do
-    '''
-    def get(self, request, format=None):
-        scheduler = Scheduler.objects.all()
-        serializer = SchedulerSerializer(scheduler, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = SchedulerSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class SchedulerList(generics.ListCreateAPIView):
+    queryset = Scheduler.objects.all()
+    serializer_class = SchedulerSerializer
 
 
-class SchedulerDetail(APIView):
-    '''
-    The instance view.
+class SchedulerDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Scheduler.objects.all()
+    serializer_class = SchedulerSerializer
 
-    Retrieve, update or delete a to do instance.
-    '''
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
-    def get_object(self, pk):
-        try:
-            return Scheduler.objects.get(pk=pk)
-        except Scheduler.DoesNotExist:
-            raise Http404
 
-    def get(self, request, pk, format=None):
-        todo = self.get_object(pk)
-        serializer = SchedulerSerializer(todo)
-        return Response(serializer.data)
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
-    def put(self, request, pk, format=None):
-        todo = self.get_object(pk)
-        serializer = SchedulerSerializer(todo, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
-        todo = self.get_object(pk)
-        todo.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+@api_view(['GET'])
+def api_root(request, given_format=None):
+    return Response({
+        'scheduler': reverse('scheduler-list', request=request, format=given_format),
+        'user': reverse('user-list', request=request, format=given_format),
+    })
