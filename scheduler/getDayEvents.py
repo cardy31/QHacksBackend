@@ -76,10 +76,11 @@ def create_datetime_from_rcf(rcfstr):
     return datetime.datetime.strptime(''.join(rcflist), '%Y-%m-%dT%H:%M:%S')
 
 def find_free_time(events):
+    gapTimes = [] # a list of lists where each internal list is [gapstarttime, duration] where duration is in minutes
     if not events:
         print('No upcoming events found.')
+        gapTimes = None
     countEvents = 0
-    gapTimes = [] # a list of lists where each internal list is [gapstarttime, duration] where duration is in minutes
     for i in range(0,len(events)-1):
         event = events[i]
         start = event['start'].get('dateTime', event['start'].get('date'))
