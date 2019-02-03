@@ -26,7 +26,7 @@ def getGapsOfTimeToday():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                '/Users/hannahgreer/Programming/QHacks2019/QHacksBackend/credentials.json', SCOPES)
+                '/Users/cardy/Programming/PycharmProjects/QHacksBackend/credentials.json', SCOPES)
             creds = flow.run_local_server()
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:

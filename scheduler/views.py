@@ -40,7 +40,7 @@ class GoogleHomeEndpoint(APIView):
         todos = Scheduler.objects.all()
         if gaps is None:
             res = {
-                "fulfillmentText": todos[0].Name,
+                "fulfillmentText": "You should vacuum today, Hannah!",
                 "fulfillmentMessages": [{
                     "text": {
                         "text": [
@@ -50,38 +50,38 @@ class GoogleHomeEndpoint(APIView):
                 }],
                 "source": ""
             }
-            return Response(res, status=status.HTTP_200_OK, )
+            return Response(res, status=status.HTTP_200_OK)
         for todo in todos:
             for time,length in gaps:
                 if todo.lengthOfTime <= length:
+                    saying = "You should " + todo.name + " today!"
                     res = {
-                        "fulfillmentText": todo.name,
+                        "fulfillmentText": saying,
                         "fulfillmentMessages": [{
                             "text": {
                                 "text": [
-                                    "You should " + todo.name + " today, Hannah!"
+                                    saying
                                 ]
                             }
                         }],
                         "source": ""
                     }
                     insertIntoCal(todo.name, time, length)
-                    return Response(res, status=status.HTTP_200_OK, )
+                    return Response(res, status=status.HTTP_200_OK)
 
+        # res = {
+        #     "fulfillmentText": "You should vacuum today, Hannah!",
+        #     "fulfillmentMessages": [{
+        #         "text": {
+        #             "text": [
+        #                 "You should vacuum today, Hannah!"
+        #             ]
+        #         }
+        #     }],
+        #     "source": "",
+        # }
 
-        res = {
-            "fulfillmentText": "You should vacuum today, Hannah!",
-            "fulfillmentMessages": [{
-                "text": {
-                    "text": [
-                        "You should vacuum today, Hannah!"
-                    ]
-                }
-            }],
-            "source": ""
-        }
-
-        return Response(res, status=status.HTTP_200_OK,)
+        return Response({}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
