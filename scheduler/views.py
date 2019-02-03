@@ -1,4 +1,3 @@
-from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,8 +8,8 @@ from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.permissions import AllowAny
+from .getDayEvents import getGapsOfTimeToday
 
-import getDayEvents
 
 class SchedulerList(generics.ListCreateAPIView):
     queryset = Scheduler.objects.all()
@@ -46,8 +45,7 @@ class GoogleHomeEndpoint(APIView):
                         "You should vacuum today, Hannah!"
                     ]
                 }
-            }
-            ],
+            }],
             "source": ""
         }
 
