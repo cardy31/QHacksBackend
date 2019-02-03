@@ -37,6 +37,19 @@ class GoogleHomeEndpoint(APIView):
     def post(self, request, *args, **kwargs):
         gaps = getGapsOfTimeToday()
         todos = Scheduler.objects.all()
+        if gaps is None:
+            res = {
+                "fulfillmentText": todos[0].Name,
+                "fulfillmentMessages": [{
+                    "text": {
+                        "text": [
+                            "You should vacuum today, Hannah!"
+                        ]
+                    }
+                }],
+                "source": ""
+            }
+            return Response(res, status=status.HTTP_200_OK, )
         for todo in todos:
             for _,length in gaps:
                 if todo.lengthOfTime <= length:
