@@ -9,7 +9,7 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-def main():
+def getGapsOfTimeToday():
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -43,7 +43,7 @@ def main():
                                         maxResults=10, singleEvents=True,
                                         orderBy='startTime').execute()
     events = events_result.get('items', [])
-    print(find_free_time(events))
+    return find_free_time(events)
 
     # if not events:
     #     print('No upcoming events found.')
@@ -105,7 +105,4 @@ def find_free_time_at_end_of_day(event, endOfDayTime):
         return [lasteventDatetime, duration]
     return None
 
-
-if __name__ == '__main__':
-    main()
 

@@ -1,3 +1,4 @@
 venv
 .idea
 QHacksBackend/secret_key.txt
+QHacksBackend/credentials.json
