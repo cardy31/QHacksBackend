@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.permissions import AllowAny
 from .getDayEvents import getGapsOfTimeToday
+from .insertIntoCalendar import insertIntoCal
 
 
 class SchedulerList(generics.ListCreateAPIView):
@@ -51,19 +52,20 @@ class GoogleHomeEndpoint(APIView):
             }
             return Response(res, status=status.HTTP_200_OK, )
         for todo in todos:
-            for _,length in gaps:
+            for time,length in gaps:
                 if todo.lengthOfTime <= length:
                     res = {
                         "fulfillmentText": todo.Name,
                         "fulfillmentMessages": [{
                             "text": {
                                 "text": [
-                                    "You should vacuum today, Hannah!"
+                                    "You should " + todo.Name + " today, Hannah!"
                                 ]
                             }
                         }],
                         "source": ""
                     }
+                    insertIntoCal(todo.Name, time, length)
                     return Response(res, status=status.HTTP_200_OK, )
 
 
