@@ -2,6 +2,7 @@ from rest_framework import serializers
 from scheduler.models import Scheduler
 from django.contrib.auth.models import User
 
+
 class SchedulerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scheduler
@@ -11,4 +12,4 @@ class SchedulerSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'firstname', 'lastname', 'is_staff', 'is_active')
+        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'is_staff', 'is_active')

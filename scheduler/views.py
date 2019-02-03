@@ -2,13 +2,13 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from scheduler.models import Scheduler
+from .models import Scheduler
 from scheduler.serializers import SchedulerSerializer, UserSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
-
+from rest_framework.permissions import AllowAny
 
 class SchedulerList(generics.ListCreateAPIView):
     queryset = Scheduler.objects.all()
@@ -19,6 +19,7 @@ class SchedulerDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Scheduler.objects.all()
     serializer_class = SchedulerSerializer
 
+
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -27,6 +28,31 @@ class UserList(generics.ListCreateAPIView):
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class GoogleHomeEndpoint(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        todos = Scheduler.objects.all()
+
+        new_response = {
+            "conversationToken": "{\"state\":null,\"data\":{}}",
+            "expectUserResponse": False,
+            "finalResponse": {
+                "richResponse": {
+                    "items": [
+                        {
+                            "simpleResponse": {
+                                "textToSpeech": "You can vacuum today!"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        return Response(new_response, status=status.HTTP_200_OK,)
 
 
 @api_view(['GET'])
