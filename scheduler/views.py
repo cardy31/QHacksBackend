@@ -55,17 +55,17 @@ class GoogleHomeEndpoint(APIView):
             for time,length in gaps:
                 if todo.lengthOfTime <= length:
                     res = {
-                        "fulfillmentText": todo.Name,
+                        "fulfillmentText": todo.name,
                         "fulfillmentMessages": [{
                             "text": {
                                 "text": [
-                                    "You should " + todo.Name + " today, Hannah!"
+                                    "You should " + todo.name + " today, Hannah!"
                                 ]
                             }
                         }],
                         "source": ""
                     }
-                    insertIntoCal(todo.Name, time, length)
+                    insertIntoCal(todo.name, time, length)
                     return Response(res, status=status.HTTP_200_OK, )
 
 
