@@ -35,7 +35,24 @@ class GoogleHomeEndpoint(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
+        gaps = getGapsOfTimeToday()
         todos = Scheduler.objects.all()
+        for todo in todos:
+            for _,length in gaps:
+                if todo.lengthOfTime <= length:
+                    res = {
+                        "fulfillmentText": todo.Name,
+                        "fulfillmentMessages": [{
+                            "text": {
+                                "text": [
+                                    "You should vacuum today, Hannah!"
+                                ]
+                            }
+                        }],
+                        "source": ""
+                    }
+                    return Response(res, status=status.HTTP_200_OK, )
+
 
         res = {
             "fulfillmentText": "You should vacuum today, Hannah!",
