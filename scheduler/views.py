@@ -10,6 +10,7 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.permissions import AllowAny
 
+
 class SchedulerList(generics.ListCreateAPIView):
     queryset = Scheduler.objects.all()
     serializer_class = SchedulerSerializer
@@ -36,23 +37,20 @@ class GoogleHomeEndpoint(APIView):
     def post(self, request, *args, **kwargs):
         todos = Scheduler.objects.all()
 
-        new_response = {
-            "conversationToken": "{\"state\":null,\"data\":{}}",
-            "expectUserResponse": False,
-            "finalResponse": {
-                "richResponse": {
-                    "items": [
-                        {
-                            "simpleResponse": {
-                                "textToSpeech": "You can vacuum today!"
-                            }
-                        }
+        res = {
+            "fulfillmentText": "You should vacuum today, Hannah!",
+            "fulfillmentMessages": [{
+                "text": {
+                    "text": [
+                        "You should vacuum today, Hannah!"
                     ]
                 }
             }
+            ],
+            "source": ""
         }
 
-        return Response(new_response, status=status.HTTP_200_OK,)
+        return Response(res, status=status.HTTP_200_OK,)
 
 
 @api_view(['GET'])
