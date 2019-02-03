@@ -9,7 +9,7 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-def main():
+def insertIntoCal(name, aDateTime, duration):
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -23,27 +23,25 @@ def main():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                '../credentials.json', SCOPES)
+                '/Users/hannahgreer/Programming/QHacks2019/QHacksBackend/credentials.json', SCOPES)
             creds = flow.run_local_server()
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
 
     service = build('calendar', 'v3', credentials=creds)
-
     # Call the Calendar API
-    now = datetime.datetime.now().isoformat() + '-05:00'
-
+    starttime = aDateTime.isoformat() + '-05:00'
+    end = aDateTime + datetime.timedelta(minutes=duration)
+    endtime = end.isoformat() + '-05:00'
     event = {
-        'summary': 'Go swimming',
-        'start': {
-            'dateTime': '2019-02-05T09:00:00-05:00',
-        },
-        'end': {
-            'dateTime': '2019-02-05T10:00:00-05:00',
+       'summary': name,
+       'start': {
+           'dateTime': starttime,
+       },
+       'end': {
+                  'dateTime': endtime,
         },
     }
     event = service.events().insert(calendarId='primary', body=event).execute()
 
-if __name__ == '__main__':
-    main()
